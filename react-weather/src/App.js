@@ -124,7 +124,7 @@ function App() {
             <input
               type="texr"
               className="search-bar"
-              placeholder="Search..."
+              placeholder="Search city..."
               onChange={(e) => setQuery(e.target.value)}
               value={query}
             />
@@ -162,6 +162,31 @@ function App() {
         )}
 
         {error !== '' ? <div className="error-message">{error}</div> : null}
+
+        <footer>
+          <hr />
+          <p>Weather app created by Nicholas Smith</p>
+          <p>
+            You can find the code for this project on Github{' '}
+            <a
+              href="https://github.com/njpsmith/react-weather"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>
+          </p>
+          <p>
+            Find me on LinkedIn{' '}
+            <a
+              href="https://www.linkedin.com/in/nicholas-smith-97a90829/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>
+          </p>
+        </footer>
       </main>
     </div>
   );
