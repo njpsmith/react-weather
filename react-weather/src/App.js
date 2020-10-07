@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { read_cookie, bake_cookie } from 'sfcookies';
+
 import spyglassIcon from './assets/spyglass.svg';
 import cloudsIcon from './assets/clouds.svg';
 import rainIcon from './assets/rain.svg';
@@ -10,10 +12,17 @@ const api = {
   baseApiURL: 'https://api.openweathermap.org/data/2.5/',
 };
 
+const lastSearchedLocationCookie = 'lastSearchedLocationCookie';
+
 function App() {
   const [query, setQuery] = useState('');
   const [weather, setWeather] = useState({});
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const lastSearchedLocation = read_cookie(lastSearchedLocationCookie);
+    setWeather(lastSearchedLocation);
+  }, []);
 
   const searchWeather = (e) => {
     e.preventDefault();
@@ -26,9 +35,11 @@ function App() {
             setError('City not found! Please try again');
             setWeather({});
           } else {
+            // No error
             setError('');
             setQuery('');
             setWeather(result);
+            bake_cookie(lastSearchedLocationCookie, result);
             console.log('result', result);
           }
         });
