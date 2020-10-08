@@ -1,4 +1,7 @@
 import React from 'react';
+import ScrollAnimation from 'react-animate-on-scroll';
+
+import Zoom from 'react-reveal/Zoom';
 import WeatherIcon from './WeatherIcon';
 
 const LocationBox = ({ weather }) => {
@@ -55,25 +58,29 @@ const LocationBox = ({ weather }) => {
     <div>
       {typeof weather.main != 'undefined' ? (
         <div>
-          <div className="location-box">
-            <div className="location">
-              {weather.name}, {weather.sys.country}
+          <ScrollAnimation animateIn="fadeInDown">
+            <div className="location-box">
+              <div className="location">
+                {weather.name}, {weather.sys.country}
+              </div>
+              <div className="date">{dateBuilder(new Date())}</div>
             </div>
-            <div className="date">{dateBuilder(new Date())}</div>
-          </div>
-          <div className="weather-box">
-            <div className="temp">{Math.round(weather.main.temp)}°C</div>
-            <div className="weather">{weather.weather[0].main}</div>
+          </ScrollAnimation>
+          <Zoom>
+            <div className="weather-box">
+              <div className="temp">{Math.round(weather.main.temp)}°C</div>
+              <div className="weather">{weather.weather[0].main}</div>
 
-            <WeatherIcon weather={weather} />
+              <WeatherIcon weather={weather} />
 
-            <div className="sunrise-sunset">
-              Sunrise: {convertUnixToTime(weather.sys.sunrise)}am GMT
+              <div className="sunrise-sunset">
+                Sunrise: {convertUnixToTime(weather.sys.sunrise)}am GMT
+              </div>
+              <div className="sunrise-sunset">
+                Sunrise: {convertUnixToTime(weather.sys.sunset)}pm GMT
+              </div>
             </div>
-            <div className="sunrise-sunset">
-              Sunrise: {convertUnixToTime(weather.sys.sunset)}pm GMT
-            </div>
-          </div>
+          </Zoom>
         </div>
       ) : (
         ''
