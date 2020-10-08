@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { read_cookie, bake_cookie } from 'sfcookies';
 
+import LocationBox from './components/LocationBox';
+import Footer from './components/Footer';
+import ErrorMessage from './components/ErrorMessage';
+
 import spyglassIcon from './assets/spyglass.svg';
-import cloudsIcon from './assets/clouds.svg';
-import rainIcon from './assets/rain.svg';
-import clearIcon from './assets/sun.svg';
-import snowIcon from './assets/snowflakes.svg';
 
 const api = {
   key: 'c465a83c6aca8c14fd0393456a386e7f',
@@ -46,79 +46,6 @@ function App() {
     }
   };
 
-  const dateBuilder = (d) => {
-    let months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    let days = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-    ];
-
-    let day = days[d.getDay()];
-    let date = d.getDate();
-    let month = months[d.getMonth()];
-    let year = d.getFullYear();
-
-    return `${day}, ${date} ${month}, ${year}`;
-  };
-
-  const convertUnixToTime = (unixTimestamp) => {
-    let unix_timestamp = unixTimestamp;
-    // Create a new JavaScript Date object based on the timestamp
-    // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-    var date = new Date(unix_timestamp * 1000);
-    // Hours part from the timestamp
-    var hours = date.getHours();
-    // Minutes part from the timestamp
-    var minutes = '0' + date.getMinutes();
-
-    // Will display time in 10:30:23 format
-    var formattedTime = hours + ':' + minutes.substr(-2);
-
-    return formattedTime;
-  };
-
-  const getWeatherIcon = (weatherType) => {
-    let weatherIcon = '';
-
-    switch (weatherType) {
-      case 'Clouds':
-        weatherIcon = cloudsIcon;
-        break;
-      case 'Rain':
-        weatherIcon = rainIcon;
-        break;
-      case 'Clear':
-        weatherIcon = clearIcon;
-        break;
-      case 'Snow':
-        weatherIcon = snowIcon;
-        break;
-      default:
-        weatherIcon = '';
-        break;
-    }
-
-    return weatherIcon;
-  };
-
   return (
     <div
       className={
@@ -143,61 +70,11 @@ function App() {
           </form>
         </div>
 
-        {typeof weather.main != 'undefined' ? (
-          <div>
-            <div className="location-box">
-              <div className="location">
-                {weather.name}, {weather.sys.country}
-              </div>
-              <div className="date">{dateBuilder(new Date())}</div>
-            </div>
-            <div className="weather-box">
-              <div className="temp">{Math.round(weather.main.temp)}°C</div>
-              <div className="weather">{weather.weather[0].main}</div>
-              <div className="weather-icon">
-                <img
-                  src={getWeatherIcon(weather.weather[0].main)}
-                  alt="weather icon"
-                />
-              </div>
-              <div className="sunrise-sunset">
-                Sunrise: {convertUnixToTime(weather.sys.sunrise)}am
-              </div>
-              <div className="sunrise-sunset">
-                Sunrise: {convertUnixToTime(weather.sys.sunset)}pm
-              </div>
-            </div>
-          </div>
-        ) : (
-          ''
-        )}
+        <LocationBox weather={weather} />
 
-        {error !== '' ? <div className="error-message">{error}</div> : null}
+        <ErrorMessage error={error} />
 
-        <footer>
-          <hr />
-          <p>Weather app created by Nicholas Smith</p>
-          <p>
-            You can find the code for this project on Github{' '}
-            <a
-              href="https://github.com/njpsmith/react-weather"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </a>
-          </p>
-          <p>
-            Find me on LinkedIn{' '}
-            <a
-              href="https://www.linkedin.com/in/nicholas-smith-97a90829/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </a>
-          </p>
-        </footer>
+        <Footer />
       </main>
     </div>
   );
