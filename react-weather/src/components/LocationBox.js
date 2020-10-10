@@ -2,7 +2,7 @@ import React from 'react';
 import ScrollAnimation from 'react-animate-on-scroll';
 
 import Zoom from 'react-reveal/Zoom';
-import WeatherIcon from './WeatherIcon';
+import WeatherIcons from './WeatherIcons';
 
 const LocationBox = ({ weather }) => {
   const dateBuilder = (d) => {
@@ -71,7 +71,7 @@ const LocationBox = ({ weather }) => {
               <div className="temp">{Math.round(weather.main.temp)}°C</div>
               <div className="weather">{weather.weather[0].main}</div>
 
-              <WeatherIcon weather={weather} />
+              <WeatherIcons weather={weather} />
 
               <div className="sunrise-sunset">
                 Sunrise: {convertUnixToTime(weather.sys.sunrise)}am GMT

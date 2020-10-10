@@ -12,6 +12,8 @@ const api = {
   baseApiURL: 'https://api.openweathermap.org/data/2.5/',
 };
 
+// Find out where it's raining right now: https://www.rainviewer.com/map.html
+
 const lastSearchedLocationCookie = 'lastSearchedLocationCookie';
 
 function App() {
