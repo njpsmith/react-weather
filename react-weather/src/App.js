@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { read_cookie, bake_cookie } from 'sfcookies';
+import { connect } from 'react-redux';
+import { read_cookie } from 'sfcookies';
+
+import { fetchWeather, setWeatherFromCookie } from './actions';
 
 import LocationBox from './components/LocationBox';
 import Footer from './components/Footer';
@@ -7,52 +10,30 @@ import ErrorMessage from './components/ErrorMessage';
 
 import spyglassIcon from './assets/spyglass.svg';
 
-const api = {
-  key: 'c465a83c6aca8c14fd0393456a386e7f',
-  baseApiURL: 'https://api.openweathermap.org/data/2.5/',
-};
-
 // Find out where it's raining right now: https://www.rainviewer.com/map.html
 
-const lastSearchedLocationCookie = 'lastSearchedLocationCookie';
-
-function App() {
+const App = (props) => {
   const [query, setQuery] = useState('');
-  const [weather, setWeather] = useState({});
-  const [error, setError] = useState('');
 
   useEffect(() => {
-    const lastSearchedLocation = read_cookie(lastSearchedLocationCookie);
-    setWeather(lastSearchedLocation);
+    const lastSearchedLocation = read_cookie('lastSearchedLocationCookie');
+    props.setWeatherFromCookie(lastSearchedLocation);
   }, []);
 
   const searchWeather = (e) => {
     e.preventDefault();
 
     if (query !== '') {
-      fetch(`${api.baseApiURL}weather?q=${query}&units=metric&APPID=${api.key}`)
-        .then((res) => res.json())
-        .then((result) => {
-          if (result.cod === '404') {
-            setError('City not found! Please try again');
-            setWeather({});
-          } else {
-            // No error
-            setError('');
-            setQuery('');
-            setWeather(result);
-            bake_cookie(lastSearchedLocationCookie, result);
-            console.log('result', result);
-          }
-        });
+      setQuery('');
+      props.fetchWeather(query);
     }
   };
 
   return (
     <div
       className={
-        typeof weather.main != 'undefined'
-          ? weather.main.temp > 16
+        typeof props.weather.main != 'undefined'
+          ? props.weather.main.temp > 16
             ? 'app warm'
             : 'app'
           : 'app'
@@ -62,7 +43,7 @@ function App() {
         <div className="search-box">
           <form onSubmit={searchWeather}>
             <input
-              type="texr"
+              type="text"
               className="search-bar"
               placeholder="Search city..."
               onChange={(e) => setQuery(e.target.value)}
@@ -72,14 +53,27 @@ function App() {
           </form>
         </div>
 
-        <LocationBox weather={weather} />
+        <LocationBox />
 
-        <ErrorMessage error={error} />
+        <ErrorMessage error={props.unrecognisedLocationMessage} />
 
         <Footer />
       </main>
     </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    weather: state.weatherReducer.weather,
+    unrecognisedLocationMessage:
+      state.weatherReducer.unrecognisedLocationMessage,
+  };
+};
+
+const mapDispatchToProps = {
+  fetchWeather: fetchWeather,
+  setWeatherFromCookie: setWeatherFromCookie,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

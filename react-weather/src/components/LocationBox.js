@@ -1,10 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import ScrollAnimation from 'react-animate-on-scroll';
 
 import Zoom from 'react-reveal/Zoom';
 import WeatherIcons from './WeatherIcons';
 
-const LocationBox = ({ weather }) => {
+const LocationBox = (props) => {
+  const weather = props.weather;
+
   const dateBuilder = (d) => {
     let months = [
       'January',
@@ -77,7 +80,7 @@ const LocationBox = ({ weather }) => {
                 Sunrise: {convertUnixToTime(weather.sys.sunrise)}am GMT
               </div>
               <div className="sunrise-sunset">
-                Sunrise: {convertUnixToTime(weather.sys.sunset)}pm GMT
+                Sunset: {convertUnixToTime(weather.sys.sunset)}pm GMT
               </div>
             </div>
           </Zoom>
@@ -89,4 +92,10 @@ const LocationBox = ({ weather }) => {
   );
 };
 
-export default LocationBox;
+const mapStateToProps = (state) => {
+  return {
+    weather: state.weatherReducer.weather,
+  };
+};
+
+export default connect(mapStateToProps, null)(LocationBox);
